@@ -1,9 +1,7 @@
 package com.zlh.zk.lockdemo.factory;
 
 import com.zlh.zk.lockdemo.ZkLock;
-import com.zlh.zk.lockdemo.ZkLockSerializer;
 import lombok.Data;
-import org.I0Itec.zkclient.ZkClient;
 import org.apache.zookeeper.ZooKeeper;
 
 /**
@@ -18,7 +16,6 @@ public abstract class AbstractZkLockFactory implements LockFactory{
      */
     private String zklock_root_path = "/zklock/locks";
 
-    private ZkClient client;
     private ZooKeeper zkClient;
     /**
      * conect 超时时间 单位ms
@@ -27,7 +24,7 @@ public abstract class AbstractZkLockFactory implements LockFactory{
     /**
      * session 超时时间 单位ms
      */
-    private static final int SESSION_TIMEOUT = 3000;
+    private static final int SESSION_TIMEOUT = 30000;
 
     /**
      * 默认服务器
@@ -38,22 +35,20 @@ public abstract class AbstractZkLockFactory implements LockFactory{
      * 默认实现单机版的分布式锁
      */
     public AbstractZkLockFactory() {
-//        try {
-//            this.zkClient = new ZooKeeper(DEFAULT_SERVERS,SESSION_TIMEOUT,null);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-        this.client = new ZkClient(DEFAULT_SERVERS,SESSION_TIMEOUT,CONNCECTION_TIMEOUT);
-        this.client.setZkSerializer(new ZkLockSerializer());
+        try {
+            this.zkClient = new ZooKeeper(DEFAULT_SERVERS,SESSION_TIMEOUT,null);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public AbstractZkLockFactory(ZkClient client) {
-        this.client = client;
+    public AbstractZkLockFactory(ZooKeeper client) {
+        this.zkClient = client;
     }
 
     @Override
     public ZkLock getLock(String lockPath) {
-        return createLock(lockPath,false);
+        return createLock(lockPath,true);
     }
 
     @Override

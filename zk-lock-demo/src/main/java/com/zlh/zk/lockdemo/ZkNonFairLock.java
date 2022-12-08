@@ -1,6 +1,6 @@
 package com.zlh.zk.lockdemo;
 
-import org.I0Itec.zkclient.ZkClient;
+import org.apache.zookeeper.ZooKeeper;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -12,9 +12,9 @@ public class ZkNonFairLock implements ZkLock{
 
     private String lockPath;
     private String lockName;
-    private ZkClient client;
+    private ZooKeeper client;
 
-    public ZkNonFairLock(String lockPath, String lockName, ZkClient client) {
+    public ZkNonFairLock(String lockPath, String lockName, ZooKeeper client) {
         this.lockPath = lockPath;
         this.lockName = lockName;
         this.client = client;
